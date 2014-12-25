@@ -171,7 +171,9 @@ static NSString *_serverPath;
             NSError *error = nil;
             NSDateFormatter *originDateFormatter = [[NSDateFormatter alloc] init];
             [originDateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+            [originDateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
             [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
             
             for (NSDictionary *dict in [NSJSONSerialization JSONObjectWithData:data options:0 error:&error]) {
                 HistoryRoomData *h = [[HistoryRoomData alloc] init];
