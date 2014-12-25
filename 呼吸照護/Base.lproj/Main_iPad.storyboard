@@ -106,6 +106,16 @@
                                             <action selector="uploadClick:" destination="TCb-jn-xpP" eventType="touchUpInside" id="Zvv-vn-Ekd"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="l5h-ZZ-YF3">
+                                        <rect key="frame" x="8" y="2" width="30" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="更新">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="refreshClick:" destination="TCb-jn-xpP" eventType="touchUpInside" id="KyF-85-buN"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </view>
                         </barButtonItem>

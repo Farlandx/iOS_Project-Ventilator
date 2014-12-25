@@ -177,6 +177,7 @@
 - (void)patientListDelegate:(NSArray *)patientList {
     NSLog(@"%@", [db getUserById:@"qq"].Name);
     [db savePatientList:patientList];
+    [ProgressHUD dismiss];
 }
 
 #pragma mark - Table view data source
@@ -331,6 +332,11 @@
     uploaderTextField = [alertView textFieldAtIndex:0];
     [uploaderTextField setDelegate:self];
     [alertView show];
+}
+
+- (IBAction)refreshClick:(id)sender {
+    [ProgressHUD show:@"資料更新中..."];
+    [api getUserList];
 }
 
 #pragma mark - UITextFieldDelegate
