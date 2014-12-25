@@ -89,9 +89,9 @@ static NSString *_serverPath;
         if (data.length > 0 && connectionError == nil) {
             NSError *error = nil;
             @try {
-                for (NSDictionary *dict in [NSJSONSerialization JSONObjectWithData:data options:0 error:&error]) {
+                for (NSDictionary *dict in [[NSJSONSerialization JSONObjectWithData:data options:0 error:&error] valueForKey:@"Items"]) {
                     User *u = [[User alloc] init];
-                    u.UserIdString = [dict valueForKey:@"$id"];
+                    u.UserIdString = [dict valueForKey:@"Id"];
                     u.EmployeeId = [dict valueForKey:@"EmployeeId"] == [NSNull null] ? @"" : [dict valueForKey:@"EmployeeId"];
                     u.RFID = [dict valueForKey:@"RFID"] == [NSNull null] ? @"" : [dict valueForKey:@"RFID"];
                     u.BarCode = [dict valueForKey:@"BarCode"] == [NSNull null] ? @"" : [dict valueForKey:@"BarCode"];
