@@ -47,7 +47,7 @@
         NSString *deleteSQL = [NSString stringWithFormat:@"DELETE FROM %@", tableName];
         
         char *errMsg;
-        if (sqlite3_exec(sqliteDb, [deleteSQL UTF8String], NULL, NULL, &errMsg) != SQLITE_OK) {
+        if (sqlite3_exec(sqliteDb, [deleteSQL UTF8String], NULL, NULL, &errMsg) == SQLITE_OK) {
             isSuccess = true;
         }
         else {
