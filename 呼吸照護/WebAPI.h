@@ -24,7 +24,7 @@
 @property (assign, nonatomic) id<WebAPIDelegate> delegate;
 
 - (id)initWithServerPath:(NSString *)serverPath;
-- (void)setServerPath:(NSString *)serverPath;
++ (void)setServerPath:(NSString *)serverPath;
 
 - (void)uploadVentData:(NSData *)jsonData patientId:(NSString *)patientId measureId:(NSInteger)measureId;
 - (void)getUserList;

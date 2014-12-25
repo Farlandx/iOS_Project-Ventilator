@@ -9,6 +9,7 @@
 #import "SettingsTableViewController.h"
 #import "MainViewController.h"
 #import "DatabaseUtility.h"
+#import "WebAPI.h"
 
 @interface SettingsTableViewController () <UITextFieldDelegate>
 
@@ -65,6 +66,7 @@
         
     }
     self.textServer.text = path;
+    [WebAPI setServerPath:path];
     DatabaseUtility *db = [[DatabaseUtility alloc] init];
     if ([db saveServerPath:path]) {
         mainView.serverPath = path;

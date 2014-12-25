@@ -375,7 +375,7 @@
         uploadOper = uploaderTextField.text;
         
         MainViewController *mainView = (MainViewController *)self.parentViewController.parentViewController;
-        [api setServerPath:mainView.serverPath];
+        [WebAPI setServerPath:mainView.serverPath];
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];

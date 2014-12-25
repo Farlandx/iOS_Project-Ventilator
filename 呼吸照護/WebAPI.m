@@ -27,9 +27,8 @@
 
 #endif
 
-@implementation WebAPI {
-    NSString *_serverPath;
-}
+@implementation WebAPI
+static NSString *_serverPath;
 
 - (id)initWithServerPath:(NSString *)serverPath {
     _serverPath = serverPath;
@@ -40,7 +39,7 @@
     _delegate = nil;
 }
 
-- (void)setServerPath:(NSString *)serverPath {
++ (void)setServerPath:(NSString *)serverPath {
     _serverPath = serverPath;
 }
 
