@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E03A8D01A5394A20086411C /* TitleSidebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E03A8CF1A5394A20086411C /* TitleSidebar.m */; };
 		1E044099193D7F0E00825AA3 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E044098193D7F0E00825AA3 /* User.m */; };
 		1E04409C193DCAAF00825AA3 /* Patient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E04409B193DCAAF00825AA3 /* Patient.m */; };
 		1E15858718CC660A009249AF /* MeasureDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E15858418CC660A009249AF /* MeasureDataViewController.m */; };
@@ -87,6 +88,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E03A8CE1A5394A20086411C /* TitleSidebar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleSidebar.h; sourceTree = "<group>"; };
+		1E03A8CF1A5394A20086411C /* TitleSidebar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleSidebar.m; sourceTree = "<group>"; };
 		1E044097193D7F0E00825AA3 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		1E044098193D7F0E00825AA3 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		1E04409A193DCAAF00825AA3 /* Patient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Patient.h; sourceTree = "<group>"; };
@@ -538,6 +541,8 @@
 				1EDCDE2D1A1ECC3500C11E5F /* TitleView.m */,
 				1EDCDE2A1A1ECC3500C11E5F /* TitleLabel.h */,
 				1EDCDE2B1A1ECC3500C11E5F /* TitleLabel.m */,
+				1E03A8CE1A5394A20086411C /* TitleSidebar.h */,
+				1E03A8CF1A5394A20086411C /* TitleSidebar.m */,
 			);
 			path = Title;
 			sourceTree = "<group>";
@@ -685,6 +690,7 @@
 				1EDCDE331A1ECC3500C11E5F /* ContentScrollView.m in Sources */,
 				1E849B021936D5A8008238EE /* SettingsTableViewController.m in Sources */,
 				1E9219C8190641B2006ED639 /* XMLReader.m in Sources */,
+				1E03A8D01A5394A20086411C /* TitleSidebar.m in Sources */,
 				1EDE9FC818B6FEC5004B8FE5 /* DataTableViewCell.m in Sources */,
 				1E849AFE1935CE21008238EE /* HistoryViewController.m in Sources */,
 				1EDCDE371A1ECC3500C11E5F /* TitleView.m in Sources */,
