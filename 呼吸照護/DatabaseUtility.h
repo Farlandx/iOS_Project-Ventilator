@@ -44,4 +44,8 @@
 - (BOOL) saveServerPath:(NSString *)serverPath;
 - (NSString *) getServerPath;
 
+#pragma mark - LastDevice
+- (BOOL) saveLastDevice:(NSString *)device medicalId:(NSString *)medicalId;
+- (NSString *) getLastDeviceByMedicalId:(NSString *)medicalId;
+
 @end

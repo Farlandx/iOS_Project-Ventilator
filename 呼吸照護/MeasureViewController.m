@@ -17,7 +17,7 @@
 
 #define DEMO_MODE_INTERVAL 3.0f
 
-@interface MeasureViewController ()
+@interface MeasureViewController () <UIAlertViewDelegate>
 
 @end
 
@@ -29,25 +29,9 @@
 }
 
 @synthesize viewMode;
+@synthesize editMode;
 @synthesize demoMode;
 @synthesize myMeasureData;
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        
-    }
-    return self;
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -257,6 +241,15 @@
     [ble disconnect];
 }
 
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"button %ld click.", buttonIndex);
+    if (buttonIndex != 1) {
+        return;
+    }
+    
+    [self startReadData];
+}
 
 #pragma mark - NFC Dongle
 - (BOOL)isHeadsetPluggedIn
@@ -377,7 +370,7 @@
                 }
                 else {
                     [ble setConnectionString:blockData];
-                    [ble startRead];
+                    [self confirmLastDeviceIsEqualWithCurrentDevice:_VentNo.text byMedicalId:_ChtNo.text];
                 }
             }
             break;
@@ -619,16 +612,13 @@
     }
     else if (textField == _VentNo) {
         if (![_VentNo.text isEqualToString:@""]) {
-            if (demoMode) {
-                [self btnDemoClick:nil];
-            }
-            else {
+            if (!demoMode) {
                 [ble setConnectionString:_VentNo.text];
                 
                 _VentNo.text = [_VentNo.text componentsSeparatedByString:@"**"][0];
-                
-                [ble startRead];
             }
+            
+            [self confirmLastDeviceIsEqualWithCurrentDevice:_VentNo.text byMedicalId:_ChtNo.text];
         }
         //[self btnStart:_btnReadData];
     }
@@ -675,6 +665,9 @@
         NSLog(@"Save fail.");
     }
     else {
+        if (!editMode && !viewMode) {
+            [db saveLastDevice:myMeasureData.VentNo medicalId:myMeasureData.ChtNo];
+        }
         [_delegate measureViewControllerDismissed:myMeasureData];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
@@ -691,6 +684,37 @@
 }
 
 - (void)setEditMode {
+    editMode = YES;
+    
     [_btnSave setEnabled:YES];
+}
+
+- (void)startReadData {
+    if (demoMode) {
+        [self btnDemoClick:nil];
+    }
+    else {
+        [ble startRead];
+    }
+}
+
+- (void)confirmLastDeviceIsEqualWithCurrentDevice:(NSString *)CurrentDevice byMedicalId:(NSString *)MedicalId {
+    if ([CurrentDevice isEqualToString:@""] || [MedicalId isEqualToString:@""]) {
+        [self startReadData];
+        return;
+    }
+    
+    NSString *lastDevice = [db getLastDeviceByMedicalId:MedicalId];
+    if ([lastDevice isEqualToString:@""] || [lastDevice isEqualToString:CurrentDevice]) {
+        [self startReadData];
+        return;
+    }
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否繼續量測？"
+                                                        message:@"偵測到病患的呼吸器與上次不同，請確認是否掃錯台"
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"沒問題，繼續讀取", nil];
+    [alertView show];
 }
 @end

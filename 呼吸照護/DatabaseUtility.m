@@ -212,6 +212,15 @@
             NSLog(@"SERVER_PATH Table craeted successfully.");
         }
         
+        //建立LastDevice
+        sql_stmt = @"CREATE TABLE IF NOT EXISTS LAST_DEVICE (MedicalId TEXT PRIMARY KEY, Device TEXT, CreateTime TEXT)";
+        if (sqlite3_exec(sqliteDb, [sql_stmt UTF8String], NULL, NULL, &errMsg) != SQLITE_OK) {
+            NSLog(@"Failed to create LAST_DEVICE table.");
+        }
+        else {
+            NSLog(@"LAST_DEVICE Table craeted successfully.");
+        }
+        
         sqlite3_close(sqliteDb);
     }
     else {
@@ -963,7 +972,7 @@
 - (void) savePatientList:(NSArray *)data {
     sqlite3_stmt *statement = NULL;
     const char *dbpath = [databasePath UTF8String];
-    
+    [self deleteLastDeviceExpiredData];
     if (data.count > 0) {
         [self clearTable:@"PATIENT_DATA"];
         if (sqlite3_open(dbpath, &sqliteDb) == SQLITE_OK) {
@@ -1088,6 +1097,109 @@
     }
     
     return result;
+}
+
+#pragma mark - LastDevice
+- (BOOL) saveLastDevice:(NSString *)device medicalId:(NSString *)medicalId {
+    BOOL isSuccess = false;
+    sqlite3_stmt *statement;
+    const char *dbpath = [databasePath UTF8String];
+    
+    if (sqlite3_open(dbpath, &sqliteDb) == SQLITE_OK) {
+        //MedicalId是否已存在
+        NSString *querySQL = [NSString stringWithFormat:@"SELECT COUNT(MedicalId) FROM LAST_DEVICE WHERE MedicalId = '%@'", medicalId];
+        const char *query_stmt = [querySQL UTF8String];
+        BOOL isExist = false;
+        
+        if (sqlite3_prepare_v2(sqliteDb, query_stmt, -1, &statement, NULL) == SQLITE_OK) {
+            if (sqlite3_step(statement) == SQLITE_ROW) {
+                isExist = sqlite3_column_int(statement, 0);
+            }
+            sqlite3_finalize(statement);
+        }
+        
+        if (isExist) {
+            NSLog(@"Existing last device data, Update.");
+            NSString *updateSQL = @"UPDATE LAST_DEVICE ";
+            updateSQL = [updateSQL stringByAppendingString:[NSString stringWithFormat:@"SET Device = '%@' ", device]];
+            updateSQL = [updateSQL stringByAppendingString:[NSString stringWithFormat:@"WHERE MedicalId = '%@' ", medicalId]];
+            
+            const char *update_stmt = [updateSQL UTF8String];
+            sqlite3_prepare_v2(sqliteDb, update_stmt, -1, &statement, NULL);
+        }
+        else {
+            NSLog(@"New last device data, Insert.");
+            NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+            NSString *nowTime = [dateFormatter stringFromDate:[NSDate date]];
+            NSString *insertSQL = [NSString stringWithFormat:
+                                   @"INSERT INTO LAST_DEVICE (MedicalId, Device, CreateTime) VALUES (\"%@\",\"%@\",\"%@\")",
+                                   medicalId,
+                                   device,
+                                   nowTime];
+            
+            const char *insert_stmt = [insertSQL UTF8String];
+            sqlite3_prepare_v2(sqliteDb, insert_stmt, -1, &statement, NULL);
+        }
+        int sqliteState = sqlite3_step(statement);
+        if (sqliteState == SQLITE_DONE) {
+            isSuccess = true;
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(sqliteDb);
+    }
+    
+    return isSuccess;
+}
+
+- (NSString *) getLastDeviceByMedicalId:(NSString *)medicalId {
+    NSString *device = @"";
+    const char *dbpath = [databasePath UTF8String];
+    sqlite3_stmt *statement;
+    
+    if (sqlite3_open(dbpath, &sqliteDb) == SQLITE_OK) {
+        NSString *querySQL = [NSString stringWithFormat:
+                              @"SELECT Device FROM LAST_DEVICE WHERE MedicalId = '%@'", medicalId];
+        const char *query_stmt = [querySQL UTF8String];
+        
+        if (sqlite3_prepare_v2(sqliteDb, query_stmt, -1, &statement, NULL) == SQLITE_OK) {
+            if (sqlite3_step(statement) == SQLITE_ROW) {
+                device = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 0)];
+            }
+            sqlite3_finalize(statement);
+        }
+        sqlite3_close(sqliteDb);
+    }
+    
+    return device;
+}
+
+- (void)deleteLastDeviceExpiredData {
+    sqlite3_stmt *statement = NULL;
+    const char *dbpath = [databasePath UTF8String];
+    
+    if (sqlite3_open(dbpath, &sqliteDb) == SQLITE_OK) {
+        //刪了三天前的資料
+        NSDateComponents *dateComponets = [[NSDateComponents alloc] init];
+        [dateComponets setDay:-3];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+        
+        
+        NSString *deleteSQL = [NSString stringWithFormat:@"DELETE FROM LAST_DEVICE WHERE CreateTime < '%@'", [dateFormatter stringFromDate:[[NSCalendar currentCalendar] dateByAddingComponents:dateComponets toDate:[NSDate date] options:0]]];
+        
+        const char *delete_stmt = [deleteSQL UTF8String];
+        sqlite3_prepare_v2(sqliteDb, delete_stmt, -1, &statement, NULL);
+        sqlite3_bind_null(statement, 1);
+        int foo = sqlite3_step(statement);
+        if (foo != SQLITE_DONE) {
+            NSLog(@"Error. %@ (%s)", deleteSQL, __func__);
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(sqliteDb);
+    }
 }
 
 @end
